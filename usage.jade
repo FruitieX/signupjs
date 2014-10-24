@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        title signupjs API usage
+    body
+        h1 signupjs API usage
+
+        ul
+            li
+                | GET /tourney_name - return array of all "tourney_name" participants
+            li
+                | POST /tourney_name - register to "tourney_name", provide valid participant as POST data
+
+        h2 Example participant
+        code(style='white-space:pre;')
+            | {
+            |    nicks: [ 'myNick' ]
+            | }
+
+        h2 Example team participant
+        code(style='white-space:pre;')
+            | {
+            |    team: 'myTeam',
+            |    nicks: [ 'nick1', 'nick2', 'nick3', ... ]
+            | }
+
