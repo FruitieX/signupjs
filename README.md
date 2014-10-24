@@ -7,8 +7,10 @@ Installation
 ------------
 
 1. npm install
+2. PORT=8080 node signup.js
 
 Usage
 -----
 
-1. node signup.js
+- curl -X POST -d 'nick=test' localhost:8080/test
+- curl localhost:8080/test
