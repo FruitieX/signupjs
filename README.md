@@ -21,7 +21,7 @@ Installation
 Usage
 -----
 
-- curl -X POST -d '{"nick":"test"}' localhost:8080/test_tourney
-- curl localhost:8080/test_tourney
+    curl -X POST -d '{"nick":"test"}' localhost:8080/test_tourney
+    curl localhost:8080/test_tourney
 
 When hosting a test server, Check `localhost:8080/` for more info.
