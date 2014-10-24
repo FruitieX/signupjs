@@ -10,10 +10,6 @@ var dirname = __dirname + '/tournies';
 if(!fs.existsSync(dirname))
     fs.mkdirSync(dirname);
 
-app.get('/', function(req, res) {
-    res.render('usage');
-});
-
 var getEntries = function(tourney) {
     var path = dirname + '/' + tourney + '.json';
     var entries = [];
@@ -24,7 +20,7 @@ var getEntries = function(tourney) {
     return entries;
 };
 
-appendEntry = function(tourney, entry) {
+var appendEntry = function(tourney, entry) {
     // validate types
     if(entry.team) {
         // 'nicks' must be an array no shorter than two cells
@@ -53,13 +49,15 @@ appendEntry = function(tourney, entry) {
 app.get('/:tourney', function(req, res) {
     res.json(getEntries(req.params.tourney));
 });
-
 app.post('/:tourney', bodyParser.json(), function(req, res) {
     if(appendEntry(req.params.tourney, req.body)) {
         res.send('Signup completed');
     } else {
         res.status(400).send('Signup failed. Check "/" for usage instructions');
     }
+});
+app.get('/', function(req, res) {
+    res.render('usage');
 });
 
 app.listen(process.env.PORT || 8080);
