@@ -53,4 +53,4 @@ app.post('/:tourney', function(req, res) {
     res.render('index', { tourney: req.params.tourney, entries: entries });
 });
 
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
