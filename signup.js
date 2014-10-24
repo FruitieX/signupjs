@@ -44,11 +44,13 @@ app.post('/:tourney', function(req, res) {
     if(fs.existsSync(path))
         entries = fs.readFileSync(path).toString();
 
-    fs.writeFileSync(path, req.body.nick + '\n', { flag: 'a' });
-
-    entries += req.body.nick + '\n';
     entries = entries.split('\n');
-    entries.pop(); // trailing newline causes empty entry
+    entries.pop(); // trailing newline in file causes empty entry
+
+    if(entries.indexOf(req.body.nick) === -1) {
+        fs.writeFileSync(path, req.body.nick + '\n', { flag: 'a' });
+        entries.push(req.body.nick);
+    }
 
     res.render('index', { tourney: req.params.tourney, entries: entries });
 });
