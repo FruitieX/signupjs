@@ -125,6 +125,7 @@ var updateEntries = function() {
                     htmlString += '<td id=team' + i + 'nick' + j + '></td>';
                 }
             } else {
+                $('#table' + i).css('margin', '1px')
                 htmlString += '<td id=nick' + i + '></td>';
             }
             htmlString += '</tr>';
