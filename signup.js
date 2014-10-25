@@ -43,6 +43,7 @@ var appendEntry = function(tourney, entry) {
     // write entry to file
     entries.push(entry);
     fs.writeFileSync(dirname + '/' + tourney + '.json', JSON.stringify(entries));
+    console.log('tourney ' + tourney + ' got registration ' + JSON.stringify(entry));
     return true;
 };
 
