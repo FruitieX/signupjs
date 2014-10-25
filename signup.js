@@ -2,6 +2,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 var app = express();
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+    next();
+});
 app.set('views', __dirname);
 app.set('view engine', 'jade');
 
@@ -54,6 +60,7 @@ app.post('/:tourney', bodyParser.json(), function(req, res) {
     if(appendEntry(req.params.tourney, req.body)) {
         res.send('Signup completed');
     } else {
+        console.log('tourney ' + req.params.tourney + ': denying bad registration ' + JSON.stringify(req.body));
         res.status(400).send('Signup failed. Check "/" for usage instructions');
     }
 });
