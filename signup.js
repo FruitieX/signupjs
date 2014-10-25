@@ -57,7 +57,6 @@ app.get('/:tourney', function(req, res) {
     res.json(getEntries(req.params.tourney));
 });
 app.post('/:tourney', bodyParser.json(), function(req, res) {
-    console.log(req);
     if(appendEntry(req.params.tourney, req.body)) {
         res.send('Signup completed');
     } else {
