@@ -26,15 +26,41 @@ var getEntries = function(tourney) {
     return entries;
 };
 
+var sanitizeRE = new RegExp('(^\\s+)|(\\s+$)', 'g');
+var sanitizeName = function(name) {
+    if(typeof name !== 'string')
+        return false;
+
+    name = name.replace(sanitizeRE, '');
+    name = name.substring(0, 32);
+    return name;
+};
+
+var checkName = function(name) {
+    if(!name || !name.length)
+        return false;
+    return true;
+}
+
 var appendEntry = function(tourney, entry) {
     // validate types
     if(entry.team) {
+        entry.team = sanitizeName(entry.team);
+        if(!checkName(entry.team))
+            return false;
+
         // 'nicks' must be an array no shorter than two cells
         if (!(entry.nicks instanceof Array) || entry.nicks.length < 2)
             return false;
+
+        for(var i = 0; i < entry.nicks.length; i++) {
+            entry.nicks[i] = sanitizeName(entry.nicks[i]);
+            if(!checkName(entry.nicks[i]))
+                return false;
+        }
     } else {
-        // 'nick' must be a string
-        if(typeof entry.nick !== 'string')
+        entry.nick = sanitizeName(entry.nick);
+        if(!checkName(entry.nick))
             return false;
     }
 
