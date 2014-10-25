@@ -29,7 +29,7 @@ Din bögiga nick: <input id="nick" type="text">
 <script>
 tourney_url = 'http://fruitiex.org:1337/quake3test';
 </script>
-<script src=http://fruitiex.org/signup-cl.js></script>
+<script src=http://fruitiex.org/cl_signup.js></script>
 
 ## Anmälda
 <table id="entries"><tbody></tbody></table>
