@@ -15,8 +15,8 @@ Features:
 Installation
 ------------
 
-1. npm install
-2. PORT=8080 node signup.js
+    npm install
+    PORT=8080 node signup.js
 
 Usage
 -----
