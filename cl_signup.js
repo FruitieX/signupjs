@@ -37,6 +37,8 @@ tourney_url = 'http://fruitiex.org:1337/quake3test';
 
 var $ = jQuery; // easier jQuery in wordpress
 
+var nameMaxLen = 20;
+
 // either one of these elements must exist
 var nick = document.getElementById('nick');
 var team = document.getElementById('team');
@@ -145,13 +147,13 @@ var updateEntries = function() {
         // next we modify the contents of the dom elements
         for(var i = 0; i < entries.length; i++) {
             if(team) {
-                $('#team' + i).text(entries[i].team);
+                $('#team' + i).text(entries[i].team.substring(0,nameMaxLen));
 
                 for(var j = 0; j < entries[i].nicks.length; j++) {
-                    $('#team' + i + 'nick' + j).text(entries[i].nicks[j]);
+                    $('#team' + i + 'nick' + j).text(entries[i].nicks[j].substring(0,nameMaxLen));
                 }
             } else {
-                $('#nick' + i).text(entries[i].nick);
+                $('#nick' + i).text(entries[i].nick.substring(0,nameMaxLen));
             }
         }
     };

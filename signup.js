@@ -32,7 +32,7 @@ var sanitizeName = function(name) {
         return false;
 
     name = name.replace(sanitizeRE, '');
-    name = name.substring(0, 32);
+    name = name.substring(0, 128); // stay within sane limits
     return name;
 };
 
