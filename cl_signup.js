@@ -32,12 +32,13 @@ tourney_url = 'http://fruitiex.org:1337/quake3test';
 <script src=http://fruitiex.org/cl_signup.js></script>
 
 ## Anmälda
-<table id="entries"><tbody></tbody></table>
+<div id="entries"></div>
 */
 
 var $ = jQuery; // easier jQuery in wordpress
 
-var nameMaxLen = 20;
+var nameMaxLen = 32;
+var teamMaxLen = 64;
 
 // either one of these elements must exist
 var nick = document.getElementById('nick');
@@ -106,53 +107,41 @@ Submit = function() {
 var updateEntries = function() {
     var req = new XMLHttpRequest();
     req.onload = function() {
-        var tableBody = $('#entries tbody');
-        tableBody.empty();
+        var entriesDiv = $('#entries');
+        entriesDiv.empty();
 
         var entries = JSON.parse(req.response);
 
-        // first row contains labels, but only in team games
-        var htmlString = '';
-        if(team) {
-            htmlString += '<tr>';
-            htmlString += '<td>Team</td>';
-
-            for(var i = 1; i <= teamSize; i++) {
-                htmlString += '<td>Player ' + i + '</td>';
-            }
-
-            htmlString += '</tr>';
-            $(tableBody).append(htmlString);
-
-            htmlString = '';
-        }
-
-        // additional rows containing actual data
         // first we create the dom elements
         for(var i = 0; i < entries.length; i++) {
+            entriesDiv.append('<table id="table' + i + '"></table>');
+
+            var htmlString = '';
             htmlString += '<tr>';
             if(team) {
-                htmlString += '<td id=team' + i + '></td>';
+                htmlString += '<td style="text-align:center;" colspan="' + teamSize + '" id=team' + i + '></td></tr><tr>';
 
                 for(var j = 0; j < entries[i].nicks.length; j++) {
                     htmlString += '<td id=team' + i + 'nick' + j + '></td>';
                 }
             } else {
+                $('#table' + i).css('margin', '1px')
                 htmlString += '<td id=nick' + i + '></td>';
             }
             htmlString += '</tr>';
+            $('#table' + i).html(htmlString);
         }
-        $(tableBody).append(htmlString);
 
         // next we modify the contents of the dom elements
         for(var i = 0; i < entries.length; i++) {
             if(team) {
-                $('#team' + i).text(entries[i].team.substring(0,nameMaxLen));
+                $('#team' + i).text(entries[i].team.substring(0,teamMaxLen));
 
                 for(var j = 0; j < entries[i].nicks.length; j++) {
                     $('#team' + i + 'nick' + j).text(entries[i].nicks[j].substring(0,nameMaxLen));
                 }
             } else {
+                console.log('#nick' + i, entries[i].nick);
                 $('#nick' + i).text(entries[i].nick.substring(0,nameMaxLen));
             }
         }
