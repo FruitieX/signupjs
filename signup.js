@@ -47,7 +47,7 @@ var sendNames = function(challongeId, challongeOptions, names) {
 var createChallonge = function(tourney, postdata, browserRes) {
     var entries = getEntries(tourney);
     var names = [];
-    if(entries.length < 2) {
+    if(entries.length < 1) {
         browserRes.send('Too few entries in tourney. It does exist, right?');
         return false;
     }
