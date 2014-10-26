@@ -26,6 +26,16 @@ var getEntries = function(tourney) {
     return entries;
 };
 
+var createChallonge(tourney) {
+    var entries = getEntries(tourney);
+    if(entries.length < 2) {
+        console.log('Too few entries in tourney. It does exist, right?');
+        return false;
+    }
+
+    var challongeKey = fs.readFileSync(__dirname + '/.challongeKey
+};
+
 var sanitizeRE = new RegExp('(^\\s+)|(\\s+$)', 'g');
 var sanitizeName = function(name) {
     if(typeof name !== 'string')
@@ -88,6 +98,13 @@ app.post('/:tourney', bodyParser.json(), function(req, res) {
     } else {
         console.log('tourney ' + req.params.tourney + ': denying bad registration ' + JSON.stringify(req.body));
         res.status(400).send('Signup failed. Check "/" for usage instructions');
+    }
+});
+app.post('/:tourney', bodyParser.json(), function(req, res) {
+    if(createChallonge(req.params.tourney, req.body)) {
+        res.send('Challonge bracket created successfully');
+    } else {
+        res.send('Error creating bracket. Make sure the tourney exists. See server log for more info');
     }
 });
 app.get('/', function(req, res) {
