@@ -16,6 +16,8 @@ var dirname = __dirname + '/tournies';
 if(!fs.existsSync(dirname))
     fs.mkdirSync(dirname);
 
+var https = require('https');
+
 var getEntries = function(tourney) {
     var path = dirname + '/' + tourney + '.json';
     var entries = [];
@@ -26,14 +28,75 @@ var getEntries = function(tourney) {
     return entries;
 };
 
-var createChallonge(tourney) {
-    var entries = getEntries(tourney);
-    if(entries.length < 2) {
-        console.log('Too few entries in tourney. It does exist, right?');
-        return false;
+var querystring = require('querystring');
+var sendNames = function(challongeId, challongeOptions, names) {
+    for(var i = 0; i < names.length; i++) {
+        var options = {
+            hostname: 'api.challonge.com',
+            path: '/v1/tournaments/' + challongeId + '/participants.json?' +
+                querystring.stringify({ api_key: challongeOptions.key, "participant[name]": names[i] }),
+            method: 'POST'
+        };
+        var req = https.request(options);
+        req.end();
     }
 
-    var challongeKey = fs.readFileSync(__dirname + '/.challongeKey
+    return true;
+};
+
+var createChallonge = function(tourney, postdata, browserRes) {
+    var entries = getEntries(tourney);
+    var names = [];
+    if(entries.length < 2) {
+        browserRes.send('Too few entries in tourney. It does exist, right?');
+        return false;
+    }
+    for(var i = 0; i < entries.length; i++) {
+        if(entries[i].team) {
+            names.push(entries[i].team);
+        } else {
+            names.push(entries[i].nick);
+        }
+    }
+
+    var challongeOptions = JSON.parse(fs.readFileSync(__dirname + '/challonge.json'));
+    if(challongeOptions.key === '') {
+        browserRes.send('Challonge key is not set. Write it to challonge.json in the same directory as signup.js');
+        return;
+    }
+
+    var domain = challongeOptions.organization + '.challonge.com/' + tourney;
+
+    var options = {
+        hostname: 'api.challonge.com',
+        path: '/v1/tournaments.json?' +
+            querystring.stringify({ api_key: challongeOptions.key, subdomain: challongeOptions.organization }),
+        method: 'GET'
+    };
+
+    var req = https.request(options, function(res) {
+        if(res.statusCode !== 200) {
+            browserRes.send('Challonge tournament not found. Make sure you your challonge bracket is accessible at ' + domain);
+            return;
+        }
+
+        var data = '';
+        res.on('data', function(chunk) {
+            data += chunk.toString();
+        });
+        res.on('end', function() {
+            data = JSON.parse(data);
+
+            for(var i = 0; i < data.length; i++) {
+                if(data[i].tournament.url === tourney) {
+                    sendNames(data[i].tournament.id, challongeOptions, names);
+                    browserRes.send('adding entries');
+                    return;
+                }
+            }
+        });
+    });
+    req.end();
 };
 
 var sanitizeRE = new RegExp('(^\\s+)|(\\s+$)', 'g');
@@ -100,12 +163,8 @@ app.post('/:tourney', bodyParser.json(), function(req, res) {
         res.status(400).send('Signup failed. Check "/" for usage instructions');
     }
 });
-app.post('/:tourney', bodyParser.json(), function(req, res) {
-    if(createChallonge(req.params.tourney, req.body)) {
-        res.send('Challonge bracket created successfully');
-    } else {
-        res.send('Error creating bracket. Make sure the tourney exists. See server log for more info');
-    }
+app.post('/:tourney/createChallonge', bodyParser.json(), function(req, res) {
+    createChallonge(req.params.tourney, req.body, res);
 });
 app.get('/', function(req, res) {
     res.render('usage');
