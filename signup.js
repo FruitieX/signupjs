@@ -163,7 +163,7 @@ app.post('/:tourney', bodyParser.json(), function(req, res) {
         res.status(400).send('Signup failed. Check "/" for usage instructions');
     }
 });
-app.post('/:tourney/createChallonge', bodyParser.json(), function(req, res) {
+app.post('/:tourney/updateChallonge', bodyParser.json(), function(req, res) {
     createChallonge(req.params.tourney, req.body, res);
 });
 app.get('/', function(req, res) {
